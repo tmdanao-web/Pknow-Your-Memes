@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pinoy Meme Timeline — 2010–2025</title>
+  <meta name="description" content="A minimal single-file HTML timeline showcasing the origin and evolution of Philippine memes from 2010 to 2025." />
+  <style>
+    :root{
+      --bg:#fafafa; --card:#ffffff; --accent:#0b5cff; --muted:#6b7280; --maxw:1100px;
+      --radius:10px; font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:#111;display:flex;justify-content:center;padding:28px}
+    .wrap{width:100%;max-width:var(--maxw)}
+
+    header{display:flex;align-items:center;gap:16px;margin-bottom:20px;justify-content:space-between}
+    .logo{width:160px;height:160px;border-radius:12px;object-fit:cover;display:block}
+    /* small author photo placed top-right */
+    .author-inline{display:flex;align-items:center;gap:10px}
+    .author-photo{width:56px;height:56px;border-radius:8px;object-fit:cover;flex:0 0 56px}
+    .author-info{display:flex;flex-direction:column;gap:4px}
+    .author-name{font-weight:700;font-size:14px}
+    .author-bio{color:var(--muted);font-size:12px;margin:0}
+    @media (max-width:640px){
+      .logo{width:92px;height:92px}
+      header{flex-direction:column;align-items:flex-start}
+      .author-inline{margin-top:10px}
+    }
+
+    h1{margin:0;font-size:20px}
+    p.lead{margin:0;color:var(--muted);font-size:13px}
+
+    nav.years{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
+    .year-btn{background:transparent;border:1px solid #e6e9ef;padding:8px 10px;border-radius:8px;cursor:pointer;font-weight:600}
+    .year-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+    .controls{display:flex;gap:12px;align-items:center;margin-bottom:18px}
+    .search{flex:1}
+    input[type=search]{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e9ef}
+
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+    .card{background:var(--card);border-radius:var(--radius);padding:12px;border:1px solid #eee;display:flex;flex-direction:column;gap:8px}
+    .thumb{width:100%;height:160px;object-fit:cover;border-radius:8px;background:#f3f4f6}
+    .meta{display:flex;justify-content:space-between;align-items:center}
+    .title{font-weight:700}
+    .origin{font-size:12px;color:var(--muted)}
+    .tags{display:flex;flex-wrap:wrap;gap:6px}
+    .tag{font-size:11px;padding:6px 8px;border-radius:7px;background:#f2f7ff;color:var(--accent)}
+    .link-btn{display:inline-block;margin-top:8px;padding:6px 8px;border-radius:7px;background:#f2f7ff;color:var(--accent);text-decoration:none;font-size:12px;border:1px solid rgba(11,92,255,0.08)}
+
+    footer{margin-top:20px;color:var(--muted);font-size:13px}
+
+    /* Modal */
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:20px}
+    .modal.open{display:flex;background:rgba(0,0,0,0.45)}
+    .modal-card{width:100%;max-width:820px;background:var(--card);border-radius:12px;padding:18px;box-shadow:0 10px 30px rgba(2,6,23,0.12)}
+    .modal-grid{display:grid;grid-template-columns:1fr 320px;gap:18px}
+    .modal-thumb{width:100%;height:320px;object-fit:cover;border-radius:8px}
+    .close{float:right;background:transparent;border:0;font-size:18px;cursor:pointer}
+
+    @media (max-width:820px){
+      .modal-grid{grid-template-columns:1fr}
+      .modal-thumb{height:200px}
+    }
+
+    /* print-friendly */
+    @media print{body{background:#fff} .controls,.year-btn{display:none}}
+
+    /* small helper */
+    .muted{color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="wrap" id="app">
+    <header>
+      <div style="display:flex;align-items:center;gap:16px">
+        <img src="./image/Logo.png" alt="PK Logo" class="logo">
+        <div class="brand">
+          <h1>Pknow Your Memes</h1>
+          <p class="lead">Alamin ang Kwento, Origin, at Detalye sa likod ng mga Iconic Filipino Memes.</p>
+        </div>
+      </div>
+      <div class="author-inline" aria-labelledby="aboutTitle">
+        <img src="./image/theo.jpg" alt="Theo Jan Joseph" class="author-photo" />
+        <div class="author-info">
+          <div class="author-name" id="aboutTitle">Theo Jan Joseph</div>
+          <p class="author-bio">For Fun and Historical Records Timeline</p>
+        </div>
+      </div>
+    </header>
+
+    <div class="controls">
+      <div class="search">
+        <label for="q" class="muted" style="display:none">Search</label>
+        <input id="q" type="search" placeholder="Search meme title, tag, or origin (press Enter)" />
+      </div>
+      <div>
+        <button id="clear" class="year-btn">Show all</button>
+      </div>
+    </div>
+
+    <nav class="years" aria-label="Filter by year" id="yearNav"></nav>
+
+    <main>
+      <section id="timeline" class="grid" aria-live="polite"></section>
+    </main>
+
+    <footer>
+      Tip: click a card to open details. Add your own entries by following the data structure in the source.
+    </footer>
+  </div>
+
+  <!-- modal -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-card" role="document">
+      <button class="close" id="modalClose" aria-label="Close">✕</button>
+      <div class="modal-grid">
+        <div>
+          <h2 id="mTitle"></h2>
+          <p class="muted" id="mOrigin"></p>
+          <p id="mDesc" style="margin-top:12px"></p>
+          <div style="margin-top:12px" id="mMeta"></div>
+        </div>
+        <div>
+          <img id="mImg" class="modal-thumb" alt="meme image" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ====== DATA: add real meme objects here (title, year, origin, image, description, tags)
+    // For images, use relative paths or hosted URLs. Keep the page single-file by using base64 if desired.
+    const MEMES = [
+      { title:'Kween Yasmin Peace Sign', year:2023, embedUrl:'https://www.youtube.com/embed/4OIQLxhhVMc?start=25', image:'./image/kweenyasmin.jpg', link:'https://youtu.be/4OIQLxhhVMc?si=9C6Ro7w1YMrTnahJ&t=25', profile: 'https://www.facebook.com/www.facebookyasminasistido.090', origin:'', description:'Kween Yasmin nag Pepeace Sign' },
+      { title:'Komikero', year:2009, embedUrl:'https://www.youtube.com/embed/bhuYIr1J1zc', image:'./image/komikero.webp', link:'https://www.youtube.com/watch?si=1rUlyHi4dUW9nsBh&v=bhuYIr1J1zc&feature=youtu.be', profile: 'https://en.wikipedia.org/wiki/Gerry_Alanguilan', origin:'Hey Baby', description:'Hey Baby, meron akong museum sa San Pablo, Laguna. Punta ka!' },
+      { title:'Kapeng matapang', year:2019, embedUrl:'https://www.facebook.com/share/v/17LAzE6U8Y/', image:'./image/Kapengmatapang.jpg', link:'https://www.facebook.com/share/v/17LAzE6U8Y/', profile:'https://www.facebook.com/reniebhoycjovellanos.jovellanos', origin:'Aeouaueoueu', description:'Real name nya ay si Renie Bhoy Jovellanos' },
+      { title:'Friendzone Logo', year:2016, embedUrl:'https://www.youtube.com/embed/0cT78evUJbQ', image:'./image/friendzone.jpg', link:'https://www.bbc.com/news/blogs-trending-37363350', profile:'https://youtu.be/0cT78evUJbQ?si=Ggc-jDfqK081yJFS', origin:'Heart and Like', description:'Friendzone logo meme — origin and context', tags:['logo','friendzone','2016'] },
+      { title:'Caloocan Boy', year:2021, embedUrl:'https://www.youtube.com/embed/0cT78evUJbQ', image:'./image/caloocanboy.jpg', link:'https://www.facebook.com/photo/?fbid=101011348779108&set=pcb.101011408779102', song:'https://www.youtube.com/watch?v=DUmcisXhahQ&list=RDDUmcisXhahQ&start_radio=1', origin:'Caloocan Spotted', description:'Eh Paano kung', tags:['caloocan'] },
+      { title:'Harry Roque Boracay', year:2020, embedUrl:'https://www.youtube.com/embed/ganSYJCOVrM?start=12', image:'./image/harryroque.png', link:'https://youtu.be/ganSYJCOVrM?si=x1TpaXdW_W_J-upZ&t=12', origin:'Boracay', description:'Harry Roque served as a spokesperson of Rodrigo Dutwink Boy', tags:['2020','politics'] },
+      { title:'Zoom Call Vico Sotto', year:2020, news:'https://inquirersuper.com.ph/trending/someones-thirst-trap-zoom-background-interrupted-a-forum-with-mayor-vico-sotto-and-it-was-hilarious/', video:'https://x.com/MisterFantasty/status/1252927489082441731', image:'./image/vicosotto.jpg', origin:'Vico Sotto', description:'Zoom call interrupted by a humorous background during Mayor Vico Sotto’s forum', tags:['2020','politics','zoom'] },
+      { title:'Astig Cap and Super Lola', year:2025, news:'https://www.rappler.com/entertainment/celebrities/dennis-padilla-posts-daughter-claudia-wedding/', video:'https://www.reddit.com/r/ChikaPH/comments/1jx6m23/dennis_gift_for_claudia_and_basti_is_his_astig/?tl=en', image:'./image/dennis.png', origin:'Dennis Padilla', description:'Hangkulet', tags:['bagoong','cap'] },
+      { title:'Cringe Covid Dance', year:2020, news:'https://www.esquiremag.ph/politics/news/covid-dance-number-mascot-a00293-20200817', video:'https://youtu.be/ohFruCubxs0?si=zckxpaMAALoZYA9O&t=70', embedUrl:'https://www.youtube.com/embed/ohFruCubxs0?start=70', image:'./image/Coviddance.png', origin:'', description:'Corona Lumayo ka! Di ka namin lalapitan! Medjo lalayo sa kapwa!', tags:['Distancing Stick'] },
+      { title:'Milktea Burger tsaka Fries', year:2020, embedUrl:'https://www.youtube.com/embed/bhuYIr1J1zc', image:'./image/Burgermilktea.jpg', link:'https://www.facebook.com/watch/?v=239443514191792', profile:'https://www.tiktok.com/@joretinoy?lang=en', origin:'@queenlinaloudaot', description:'Suyo', tags:['milktea','burger','prutas','fries'] },
+      { title:'Binay Ash Wednesday', year:2016, embedUrl:'https://www.youtube.com/embed/ganSYJCOVrM?start=12', image:'./image/binay.jpg', link:'https://www.pep.ph/news/12/jejomar-binay-reacts-to-ash-wednesday-memes-part-of-the-job-e', origin:'Jejomar Binay', description:'Jejomar "Jojo" Cabauatan Binay Sr. is a Filipino lawyer and politician who served as the 13th Vice President of the Philippines from 2010 to 2016.', tags:['2016','politics'] },
+      { title:'N-word Binay', year:2020, embedUrl:'https://www.youtube.com/embed/ganSYJCOVrM?start=12', image:'./image/nancy.png', link:'https://newsinfo.inquirer.net/1213399/n-word-abby-binay-receives-offensive-messages-for-not-suspending-classes', origin:'', description:'Maria Lourdes Nancy Sombillo Binay Angeles is a Filipino politician who is serving as the 22nd mayor of Makati since June 30, 2025. She previously served as a senator of the Philippines from 2013 to 2025. Binay is the daughter of former Vice President Jejomar Binay.', tags:['2020','politics'] },
+      { title:'Jovit Basketball', year:2020, embedUrl:'https://www.youtube.com/embed/ganSYJCOVrM?start=12', image:'./image/jovit.jpg', link:'https://pop.inquirer.net/99825/jovit-baldivino-unhappy-with-the-memes-of-him-playing-basketball', origin:'2011 throwback photo', description:'However, it seems that Jovit is unhappy with the memes when he replied to a fan through Messenger saying “di kayo nakakatuwa” with a smiley emoji.', tags:['2020','jovit','basketball'] },
+      { title:'Immortal Enrile', year:2020, embedUrl:'https://www.youtube.com/embed/ganSYJCOVrM?start=12', image:'./image/enrile.jpg', news:'https://www.spin.ph/life/people/immortal-enrile-surfaces-on-social-media-but-not-as-a-meme-a1374-20200329', video:'https://x.com/krisponcenrile/status/1243755017770655744', origin:'Enrile meme circulated in 2020 as a joking COVID-era relic; character traces to older folklore.', tags:['2020','immortal','brownie'] },  // ← added comma here
+{ title:'Pipoy Como', year:2020, embedUrl:'https://www.youtube.com/embed/bhuYIr1J1zc', image:'./image/Pipoy.png', link:'https://www.tiktok.com/@pipoycomo/video/6843691465021902081', profile:'https://www.tiktok.com/@pipoycomo', origin:'', description:'ewan ko ba parang tarantado lang', tags:['hito','darwin','braces'] },
+{ title:'Darwin Lim', year:2020, image:'./image/darwin.jpeg', link:'https://www.tiktok.com/@inggopogi25/video/6883795382950841601?lang=en', profile:'https://www.tiktok.com/@inggopogi25?lang=en', origin:'', description:'ewan ko rin parang tarantadao din (1)', tags:['Doombringer','pipoy','braces'] },
+{ title:'Rakim Santos', year:2020, image:'./image/rakim.jpg', link:'https://www.youtube.com/watch?v=m_tXHULdPmI', profile:'https://www.tiktok.com/@rakimsantos_?lang=en', origin:'Ako lang ba guys', description:'', tags:['oo ikaw lang',] },
+{ title:'Langgaw sa toes ko', year:2020, image:'./image/langgaw.jpg', link:'https://www.tiktok.com/@valerie1999.50/video/7028533750313094426', profile:'https://www.tiktok.com/@valerie1999.50', origin:'Super Laughtrip', description:'Hi guys, so kanina kasi nagphotoshoot kami ng pamangkin ko grabe sobrang laughtrip ng result and super laughtrip kasi may dumikit na langaw sa toes ko... tingnan nyo. Ito po yung result diba sobrang ganda diba pero when you look closely sa pinakababa ng paa ko, sa toes ko may dumikit na langaw. Wait lang zoom in ko. Ayan po guys nakita nyo ba guys dyan sa pinakalower left side guys kita nyo ba yung langaw laughtrip sya guys oh kita nyo ba ayan oh di ko maturo pano ba to gamiting greenscreen na to ayan ayan laughtrip. Like bakit may langaw???!!! Sarap na sarap kang langaw ka ah', tags:['langgaw, ateng oa',] },
+
+    ];
+
+
+    const YEARS = [];
+    for(let y=2000;y<=2025;y++) YEARS.push(y);
+
+    const el = {
+      yearNav:document.getElementById('yearNav'),
+      timeline:document.getElementById('timeline'),
+      q:document.getElementById('q'),
+      clear:document.getElementById('clear'),
+      modal:document.getElementById('modal'),
+      modalClose:document.getElementById('modalClose'),
+      mTitle:document.getElementById('mTitle'),
+      mOrigin:document.getElementById('mOrigin'),
+      mDesc:document.getElementById('mDesc'),
+      mImg:document.getElementById('mImg'),
+      mMeta:document.getElementById('mMeta')
+    };
+
+    let activeYear = null;
+
+    function renderYears(){
+      el.yearNav.innerHTML = '';
+      YEARS.forEach(y=>{
+        const btn = document.createElement('button');
+        btn.textContent = y;
+        btn.className = 'year-btn';
+        btn.addEventListener('click',()=>{ setYearFilter(y,btn); });
+        el.yearNav.appendChild(btn);
+      });
+    }
+
+    function setYearFilter(y,btn){
+      activeYear = y;
+      document.querySelectorAll('.year-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      renderTimeline();
+    }
+
+    function clearYear(){
+      activeYear = null;
+      document.querySelectorAll('.year-btn').forEach(b=>b.classList.remove('active'));
+      renderTimeline();
+    }
+
+    function createCard(m){
+      const c = document.createElement('article');
+      c.className = 'card';
+      c.tabIndex = 0;
+
+      const img = document.createElement('img');
+      img.className = 'thumb';
+      img.loading = 'lazy';
+      img.src = m.image;
+      img.alt = m.title;
+
+      const t = document.createElement('div');
+      t.innerHTML = `<div class="meta"><div>
+          <div class="title">${escapeHtml(m.title)}</div>
+          <div class="origin">${m.year} · ${escapeHtml(m.origin)}</div>
+        </div></div>`;
+
+      // optional external links (won't trigger modal)
+      const links = [];
+      if(m.link) links.push({ href: m.link, text: 'Source' });
+      if(m.song) links.push({ href: m.song, text: 'Song' });
+      if(m.video) links.push({ href: m.video, text: 'Video' });
+      if(m.news) links.push({ href: m.news, text: 'News' });
+      if(m.profile) links.push({ href: m.profile, text: 'Profile' });
+      links.forEach(l=>{
+        const a = document.createElement('a');
+        a.className = 'link-btn';
+        a.href = l.href;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.textContent = l.text;
+        // prevent card click from also opening modal
+        a.addEventListener('click', (e) => e.stopPropagation());
+        t.appendChild(a);
+      });
+
+      const tags = document.createElement('div');
+      tags.className = 'tags';
+      (m.tags||[]).slice(0,4).forEach(tag=>{
+        const s = document.createElement('span'); s.className='tag'; s.textContent = tag; tags.appendChild(s);
+      });
+
+      c.appendChild(img);
+      c.appendChild(t);
+      c.appendChild(tags);
+
+      c.addEventListener('click',()=>openModal(m));
+      c.addEventListener('keydown',(e)=>{ if(e.key==='Enter') openModal(m); });
+      return c;
+    }
+
+    function renderTimeline(){
+      const q = el.q.value.trim().toLowerCase();
+      const list = MEMES.filter(m=>{
+        if(activeYear && m.year !== activeYear) return false;
+        if(!q) return true;
+        const hay = (m.title+' '+m.origin+' '+(m.tags||[]).join(' ')+ ' ' + m.description).toLowerCase();
+        return hay.includes(q);
+      });
+      el.timeline.innerHTML = '';
+      if(list.length===0){ el.timeline.innerHTML = '<p class="muted">No memes found — try clearing filters or add entries to the data array.</p>'; return }
+      list.forEach(m=> el.timeline.appendChild(createCard(m)) );
+    }
+
+    function openModal(m){
+      el.mTitle.textContent = m.title;
+      el.mOrigin.textContent = m.year + ' · ' + m.origin;
+      el.mDesc.textContent = m.description || '';
+      el.mImg.src = m.image;
+      // show tags and links in meta
+      el.mMeta.innerHTML = '<strong>Tags:</strong> ' + (m.tags||[]).join(', ');
+      // append links if present
+      const metaLinks = [];
+      if(m.link) metaLinks.push({href:m.link, text:'Source'});
+      if(m.song) metaLinks.push({href:m.song, text:'Song'});
+      if(m.video) metaLinks.push({href:m.video, text:'Video'});
+      if(m.news) metaLinks.push({href:m.news, text:'News'});
+      if(m.profile) metaLinks.push({href:m.profile, text:'Profile'});
+      metaLinks.forEach(l=>{
+        const a = document.createElement('a');
+        a.className = 'link-btn';
+        a.href = l.href;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.style.marginLeft = '8px';
+        a.textContent = l.text;
+        el.mMeta.appendChild(a);
+      });
+      el.modal.classList.add('open');
+      el.modal.setAttribute('aria-hidden','false');
+    }
+    function closeModal(){ el.modal.classList.remove('open'); el.modal.setAttribute('aria-hidden','true'); }
+
+    el.modal.addEventListener('click',(e)=>{ if(e.target === el.modal) closeModal(); });
+    el.modalClose.addEventListener('click',closeModal);
+    document.addEventListener('keydown',(e)=>{ if(e.key==='Escape') closeModal(); });
+
+    el.q.addEventListener('keydown',(e)=>{ if(e.key==='Enter') renderTimeline(); });
+    el.clear.addEventListener('click',()=>{ el.q.value=''; clearYear(); });
+
+    // escape HTML for safety (simple)
+    function escapeHtml(str){ return String(str).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+    // initial render
+    renderYears(); renderTimeline();
+
+    // Expose simple helper to add new meme entries from browser console
+    window._MemeAdmin = {
+      add(m){ MEMES.push(m); renderTimeline(); return m; },
+      all(){ return MEMES; }
+    };
+  </script>
+</body>
+</html>

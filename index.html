@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Pinoy Meme Timeline — 2010–2025</title>
+  <title>Pknow Your Memes</title>
   <meta name="description" content="A minimal single-file HTML timeline showcasing the origin and evolution of Philippine memes from 2010 to 2025." />
   <style>
     :root{
       --bg:#fafafa; --card:#ffffff; --accent:#0b5cff; --muted:#6b7280; --maxw:1100px;
-      --radius:10px; font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      --radius:10px; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif,sans-serif;
     }
     *{box-sizing:border-box}
     body{margin:0;background:var(--bg);color:#111;display:flex;justify-content:center;padding:28px}
@@ -17,16 +17,54 @@
     header{display:flex;align-items:center;gap:16px;margin-bottom:20px;justify-content:space-between}
     .logo{width:160px;height:160px;border-radius:12px;object-fit:cover;display:block}
     /* small author photo placed top-right */
-    .author-inline{display:flex;align-items:center;gap:10px}
-    .author-photo{width:56px;height:56px;border-radius:8px;object-fit:cover;flex:0 0 56px}
-    .author-info{display:flex;flex-direction:column;gap:4px}
-    .author-name{font-weight:700;font-size:14px}
-    .author-bio{color:var(--muted);font-size:12px;margin:0}
-    @media (max-width:640px){
-      .logo{width:92px;height:92px}
-      header{flex-direction:column;align-items:flex-start}
-      .author-inline{margin-top:10px}
-    }
+    .author-photo {
+  width: 60px;           /* smaller width */
+  height: 60px;          /* smaller height */
+  border-radius: 8px;    /* rounded corners */
+  object-fit: cover;     /* keeps proportions */
+  flex-shrink: 0;        /* prevents squishing */
+  margin-top: 2px;       /* aligns better with text */
+}
+
+.author-inline {
+  display: flex;
+  align-items: flex-start;   /* aligns photo and text at the top */
+  gap: 12px;                 /* space between photo and text */
+  flex-wrap: wrap;           /* allows text to wrap neatly on smaller screens */
+  max-width: 450px;          /* compact width */
+}
+
+.author-photo {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;            /* prevents photo from shrinking */
+}
+
+.author-info {
+  flex: 1;
+  min-width: 200px;
+  word-wrap: break-word;
+  line-height: 1.4;
+}
+
+.author-bio {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 4px 0;
+}
+
+.author-email {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.author-email:hover {
+  text-decoration: underline;
+}
 
     h1{margin:0;font-size:20px}
     p.lead{margin:0;color:var(--muted);font-size:13px}
@@ -82,18 +120,25 @@
         </div>
       </div>
       <div class="author-inline" aria-labelledby="aboutTitle">
-        <img src="./image/theo.jpg" alt="Theo Jan Joseph" class="author-photo" />
-        <div class="author-info">
-          <div class="author-name" id="aboutTitle">Theo Jan Joseph</div>
-          <p class="author-bio">For Fun and Historical Records Timeline</p>
-        </div>
-      </div>
+  <img src="./image/theo.jpg" alt="Theo Jan Joseph" class="author-photo" />
+  <div class="author-info">
+    <div class="author-name" id="aboutTitle">Theo Jan Joseph</div>
+    <p class="author-bio">For Fun and Historical Records Timeline</p>
+    <p class="author-bio">
+      You can email me at tmdanao@up.edu.ph if you want something removed, any corrections, or to contribute.
+    </p>
+    <p class="author-bio">
+  <a href="contributors.html" class="author-email">View Contributors →</a>
+  </p>
+  </div>
+</div>
+
     </header>
 
     <div class="controls">
       <div class="search">
         <label for="q" class="muted" style="display:none">Search</label>
-        <input id="q" type="search" placeholder="Search meme title, tag, or origin (press Enter)" />
+        <input id="q" type="search" placeholder="Search meme title, tag, or origin" />
       </div>
       <div>
         <button id="clear" class="year-btn">Show all</button>
@@ -133,24 +178,80 @@
     // ====== DATA: add real meme objects here (title, year, origin, image, description, tags)
     // For images, use relative paths or hosted URLs. Keep the page single-file by using base64 if desired.
     const MEMES = [
-      { title:'Kween Yasmin Peace Sign', year:2023, embedUrl:'https://www.youtube.com/embed/4OIQLxhhVMc?start=25', image:'./image/kweenyasmin.jpg', link:'https://youtu.be/4OIQLxhhVMc?si=9C6Ro7w1YMrTnahJ&t=25', profile: 'https://www.facebook.com/www.facebookyasminasistido.090', origin:'', description:'Kween Yasmin nag Pepeace Sign' },
-      { title:'Komikero', year:2009, embedUrl:'https://www.youtube.com/embed/bhuYIr1J1zc', image:'./image/komikero.webp', link:'https://www.youtube.com/watch?si=1rUlyHi4dUW9nsBh&v=bhuYIr1J1zc&feature=youtu.be', profile: 'https://en.wikipedia.org/wiki/Gerry_Alanguilan', origin:'Hey Baby', description:'Hey Baby, meron akong museum sa San Pablo, Laguna. Punta ka!' },
-      { title:'Kapeng matapang', year:2019, embedUrl:'https://www.facebook.com/share/v/17LAzE6U8Y/', image:'./image/Kapengmatapang.jpg', link:'https://www.facebook.com/share/v/17LAzE6U8Y/', profile:'https://www.facebook.com/reniebhoycjovellanos.jovellanos', origin:'Aeouaueoueu', description:'Real name nya ay si Renie Bhoy Jovellanos' },
+      { title:'Kween Yasmin Peace Sign', year:2023, embedUrl:'https://www.youtube.com/embed/4OIQLxhhVMc?start=25', image:'./image/kweenyasmin.jpg', link:'https://youtu.be/4OIQLxhhVMc?si=9C6Ro7w1YMrTnahJ&t=25', profile: 'https://www.facebook.com/www.facebookyasminasistido.090', origin:'Yasmin Marie M. Asistido', description:'Kween Yasmin nag Pepeace Sign' },
+      { title:'Komikero', year:2009, embedUrl:'https://www.youtube.com/embed/bhuYIr1J1zc', image:'./image/komikero.webp', link:'https://www.youtube.com/watch?si=1rUlyHi4dUW9nsBh&v=bhuYIr1J1zc&feature=youtu.be', profile: 'https://en.wikipedia.org/wiki/Gerry_Alanguilan', origin:'Doroteo Gerardo N. Alanguilan Jr.', description:'Hey Baby, meron akong museum sa San Pablo, Laguna. Punta ka!' },
+      { title:'Kapeng matapang', year:2019, embedUrl:'https://www.facebook.com/share/v/17LAzE6U8Y/', image:'./image/Kapengmatapang.jpg', link:'https://www.facebook.com/share/v/17LAzE6U8Y/', profile:'https://www.facebook.com/reniebhoycjovellanos.jovellanos', origin:'Renie Bhoy Jovellano', description:'Aeouaueoueu' },
       { title:'Friendzone Logo', year:2016, embedUrl:'https://www.youtube.com/embed/0cT78evUJbQ', image:'./image/friendzone.jpg', link:'https://www.bbc.com/news/blogs-trending-37363350', profile:'https://youtu.be/0cT78evUJbQ?si=Ggc-jDfqK081yJFS', origin:'Heart and Like', description:'Friendzone logo meme — origin and context', tags:['logo','friendzone','2016'] },
-      { title:'Caloocan Boy', year:2021, embedUrl:'https://www.youtube.com/embed/0cT78evUJbQ', image:'./image/caloocanboy.jpg', link:'https://www.facebook.com/photo/?fbid=101011348779108&set=pcb.101011408779102', song:'https://www.youtube.com/watch?v=DUmcisXhahQ&list=RDDUmcisXhahQ&start_radio=1', origin:'Caloocan Spotted', description:'Eh Paano kung', tags:['caloocan'] },
+      { title:'Caloocan Boy', year:2021, embedUrl:'https://www.youtube.com/embed/0cT78evUJbQ', image:'./image/caloocanboy.jpg', link:'https://www.facebook.com/photo/?fbid=101011348779108&set=pcb.101011408779102', profile: 'https://www.tiktok.com/@benjiepader29', song: 'https://www.youtube.com/watch?v=DUmcisXhahQ&list=RDDUmcisXhahQ&start_radio=1', origin:'Benjie Mallillin Pader', description:'Eh Paano kung', tags:['caloocan','urban legend'] },
       { title:'Harry Roque Boracay', year:2020, embedUrl:'https://www.youtube.com/embed/ganSYJCOVrM?start=12', image:'./image/harryroque.png', link:'https://youtu.be/ganSYJCOVrM?si=x1TpaXdW_W_J-upZ&t=12', origin:'Boracay', description:'Harry Roque served as a spokesperson of Rodrigo Dutwink Boy', tags:['2020','politics'] },
       { title:'Zoom Call Vico Sotto', year:2020, news:'https://inquirersuper.com.ph/trending/someones-thirst-trap-zoom-background-interrupted-a-forum-with-mayor-vico-sotto-and-it-was-hilarious/', video:'https://x.com/MisterFantasty/status/1252927489082441731', image:'./image/vicosotto.jpg', origin:'Vico Sotto', description:'Zoom call interrupted by a humorous background during Mayor Vico Sotto’s forum', tags:['2020','politics','zoom'] },
       { title:'Astig Cap and Super Lola', year:2025, news:'https://www.rappler.com/entertainment/celebrities/dennis-padilla-posts-daughter-claudia-wedding/', video:'https://www.reddit.com/r/ChikaPH/comments/1jx6m23/dennis_gift_for_claudia_and_basti_is_his_astig/?tl=en', image:'./image/dennis.png', origin:'Dennis Padilla', description:'Hangkulet', tags:['bagoong','cap'] },
       { title:'Cringe Covid Dance', year:2020, news:'https://www.esquiremag.ph/politics/news/covid-dance-number-mascot-a00293-20200817', video:'https://youtu.be/ohFruCubxs0?si=zckxpaMAALoZYA9O&t=70', embedUrl:'https://www.youtube.com/embed/ohFruCubxs0?start=70', image:'./image/Coviddance.png', origin:'', description:'Corona Lumayo ka! Di ka namin lalapitan! Medjo lalayo sa kapwa!', tags:['Distancing Stick'] },
-      { title:'Milktea Burger tsaka Fries', year:2020, embedUrl:'https://www.youtube.com/embed/bhuYIr1J1zc', image:'./image/Burgermilktea.jpg', link:'https://www.facebook.com/watch/?v=239443514191792', profile:'https://www.tiktok.com/@joretinoy?lang=en', origin:'@queenlinaloudaot', description:'Suyo', tags:['milktea','burger','prutas','fries'] },
+      { title:'Milktea Burger tsaka Fries', year:2020, embedUrl:'https://www.youtube.com/embed/bhuYIr1J1zc', image:'./image/Burgermilktea.jpg', link:'https://www.facebook.com/watch/?v=239443514191792', profile:'https://www.tiktok.com/@joretinoy?lang=en', origin:'@queenlinaloudaot', description:'Sana all Sinusuyo', tags:['milktea','burger','tiktok','urban legend'] },
       { title:'Binay Ash Wednesday', year:2016, embedUrl:'https://www.youtube.com/embed/ganSYJCOVrM?start=12', image:'./image/binay.jpg', link:'https://www.pep.ph/news/12/jejomar-binay-reacts-to-ash-wednesday-memes-part-of-the-job-e', origin:'Jejomar Binay', description:'Jejomar "Jojo" Cabauatan Binay Sr. is a Filipino lawyer and politician who served as the 13th Vice President of the Philippines from 2010 to 2016.', tags:['2016','politics'] },
       { title:'N-word Binay', year:2020, embedUrl:'https://www.youtube.com/embed/ganSYJCOVrM?start=12', image:'./image/nancy.png', link:'https://newsinfo.inquirer.net/1213399/n-word-abby-binay-receives-offensive-messages-for-not-suspending-classes', origin:'', description:'Maria Lourdes Nancy Sombillo Binay Angeles is a Filipino politician who is serving as the 22nd mayor of Makati since June 30, 2025. She previously served as a senator of the Philippines from 2013 to 2025. Binay is the daughter of former Vice President Jejomar Binay.', tags:['2020','politics'] },
       { title:'Jovit Basketball', year:2020, embedUrl:'https://www.youtube.com/embed/ganSYJCOVrM?start=12', image:'./image/jovit.jpg', link:'https://pop.inquirer.net/99825/jovit-baldivino-unhappy-with-the-memes-of-him-playing-basketball', origin:'2011 throwback photo', description:'However, it seems that Jovit is unhappy with the memes when he replied to a fan through Messenger saying “di kayo nakakatuwa” with a smiley emoji.', tags:['2020','jovit','basketball'] },
       { title:'Immortal Enrile', year:2020, embedUrl:'https://www.youtube.com/embed/ganSYJCOVrM?start=12', image:'./image/enrile.jpg', news:'https://www.spin.ph/life/people/immortal-enrile-surfaces-on-social-media-but-not-as-a-meme-a1374-20200329', video:'https://x.com/krisponcenrile/status/1243755017770655744', origin:'Enrile meme circulated in 2020 as a joking COVID-era relic; character traces to older folklore.', tags:['2020','immortal','brownie'] },  // ← added comma here
-{ title:'Pipoy Como', year:2020, embedUrl:'https://www.youtube.com/embed/bhuYIr1J1zc', image:'./image/Pipoy.png', link:'https://www.tiktok.com/@pipoycomo/video/6843691465021902081', profile:'https://www.tiktok.com/@pipoycomo', origin:'', description:'ewan ko ba parang tarantado lang', tags:['hito','darwin','braces'] },
-{ title:'Darwin Lim', year:2020, image:'./image/darwin.jpeg', link:'https://www.tiktok.com/@inggopogi25/video/6883795382950841601?lang=en', profile:'https://www.tiktok.com/@inggopogi25?lang=en', origin:'', description:'ewan ko rin parang tarantadao din (1)', tags:['Doombringer','pipoy','braces'] },
-{ title:'Rakim Santos', year:2020, image:'./image/rakim.jpg', link:'https://www.youtube.com/watch?v=m_tXHULdPmI', profile:'https://www.tiktok.com/@rakimsantos_?lang=en', origin:'Ako lang ba guys', description:'', tags:['oo ikaw lang',] },
-{ title:'Langgaw sa toes ko', year:2020, image:'./image/langgaw.jpg', link:'https://www.tiktok.com/@valerie1999.50/video/7028533750313094426', profile:'https://www.tiktok.com/@valerie1999.50', origin:'Super Laughtrip', description:'Hi guys, so kanina kasi nagphotoshoot kami ng pamangkin ko grabe sobrang laughtrip ng result and super laughtrip kasi may dumikit na langaw sa toes ko... tingnan nyo. Ito po yung result diba sobrang ganda diba pero when you look closely sa pinakababa ng paa ko, sa toes ko may dumikit na langaw. Wait lang zoom in ko. Ayan po guys nakita nyo ba guys dyan sa pinakalower left side guys kita nyo ba yung langaw laughtrip sya guys oh kita nyo ba ayan oh di ko maturo pano ba to gamiting greenscreen na to ayan ayan laughtrip. Like bakit may langaw???!!! Sarap na sarap kang langaw ka ah', tags:['langgaw, ateng oa',] },
+{ title:'Pipoy Como', year:2020, embedUrl:'https://www.youtube.com/embed/bhuYIr1J1zc', image:'./image/Pipoy.png', link:'https://www.tiktok.com/@pipoycomo/video/6843691465021902081', profile:'https://www.tiktok.com/@pipoycomo', origin:'', description:'ewan ko ba parang tarantado lang', tags:['hito','darwin','braces','urban legend', 'tiktok'] },
+{ title:'Darwin Lim', year:2020, image:'./image/darwin.jpeg', link:'https://www.tiktok.com/@inggopogi25/video/6883795382950841601?lang=en', profile:'https://www.tiktok.com/@inggopogi25?lang=en', origin:'', description:'ewan ko rin parang tarantadao din (1)', tags:['Doombringer','pipoy','braces','urban legend','tiktok'] },
+{ title:'Rakim Santos', year:2020, image:'./image/rakim.jpg', link:'https://www.youtube.com/watch?v=m_tXHULdPmI', profile:'https://www.tiktok.com/@rakimsantos_?lang=en', origin:'Ako lang ba guys', description:'', tags:['oo ikaw lang','urban legend','tiktok'] },
+{ title:'Langgaw sa toes ko', year:2020, image:'./image/langgaw.jpg', link:'https://www.tiktok.com/@valerie1999.50/video/7028533750313094426', profile:'https://www.tiktok.com/@valerie1999.50', origin:'Valerie Mae Cruz', description:'Hi guys, so kanina kasi nagphotoshoot kami ng pamangkin ko grabe sobrang laughtrip ng result and super laughtrip kasi may dumikit na langaw sa toes ko... tingnan nyo. Ito po yung result diba sobrang ganda diba pero when you look closely sa pinakababa ng paa ko, sa toes ko may dumikit na langaw. Wait lang zoom in ko. Ayan po guys nakita nyo ba guys dyan sa pinakalower left side guys kita nyo ba yung langaw laughtrip sya guys oh kita nyo ba ayan oh di ko maturo pano ba to gamiting greenscreen na to ayan ayan laughtrip. Like bakit may langaw???!!! Sarap na sarap kang langaw ka ah', tags:['langgaw', 'ateng oa', 'Super laughtrip'] },
+{ title:'Jhepoy Dizon', year:2013, image:'./image/jepoy.WEBP', link: 'https://youtube.fandom.com/wiki/KapKek', video:'https://youtu.be/SzOWy1o2dTA?si=k2Qdgd6mJilJfZ8g', profile:'https://www.youtube.com/@ShupetGaming', origin:'John Alfred Richards Tejero', description:'TANGINA MO, JHEPOY DIZON! ANG PANGIT NG PAGMUMUKHA MO, KITA MO NA BANG MUKHA MO SA SALAMIN? TANGINA MO! ANG PANGIT MO, HA? Tangina mo! At anong ang sinasabi mong pulubi at taga-hugas ako ng pinggan ha? TANGINA MO! Tignan mo nga bahay ko, BILLAGE YAN, eh-a-at ikaw naman, ano ha? Tangina mo skwater? HA? Nagyayabang ka pang may laptop at kita mo to hampas ko to sa pagmumukha mo eh no? Tangina mo, ha, ha? Ano, ha? Lalaban pa ka ha? Tangina mo mag-extend ka na dyan, time ka na eh. ..|.. ..|..', tags:['jhepoy dizon', 'taena mo ha',] },
+{ title:'Wah, me and my Jowa', year:2020, image:'./image/meandmyjowa.png', video:'https://www.tiktok.com/@burlazaabegail/video/6896752814010158337?is_from_webapp=1&sender_device=pc', profile:'https://www.tiktok.com/@burlazaabegail?lang=en', origin:'Ms. Abegail Burlaza', description:'', tags:['uuwi na sya', 'maghahanap ng iba', 'tiktok', 'urban legend' ] },
+{ title:'Salamat Shopee GAGO!', year:2020, image:'./image/gago.png', video:'https://youtu.be/M8MRMivATQM?si=YmUxL1ZkuNXIG7lT&t=17', profile:'', origin:'Wowowin', description:'' , tags:['Gago','Willie'] },
+      { title:'Baklang Hinaharana', year:2020, image:'./image/baklaharana.png', link:'https://www.youtube.com/watch?v=u0LqEQI75Vw', song:'https://www.youtube.com/watch?v=HbZAaJzWjBM', profile:'https://x.com/subtleclownery/status/1306455122499653633', origin:'Diko mahanap kung sino to, pero may episode ata to sa kmjs', description:'Kapag naalala ko ang mga araw na magkasama tayong dalawa', tags:['cute','kinurot','ikaw parin bibi ko' ] },
+      { title:'Pasensya kana ha Godbless', year:2020, image:'./image/pasensya.jpg', link:'https://www.youtube.com/watch?v=j_vRITbshiY', profile:'https://www.facebook.com/jay.moral.92', origin:'Jay Moral', description:'', tags:['kagawad','wag naman','kagawad godbless'] },
+      { title:'low budget Naruto', year:2020, image:'./image/naruto.png', link:'https://www.tiktok.com/@johnfreedelacruz/video/6890407677353037057', profile:'https://www.tiktok.com/@johnfreedelacruz', origin:'John Free Delacruz', description:'', tags:['cute na naruto','naruto'] },
+      { title:'Ogie Doggie', year:2005, image:'./image/ogie.jpg', link: 'https://www.youtube.com/watch?si=ka-4uhN5xH829zxc&v=XQyADWqkBbo&feature=youtu.be', news: 'https://foodcartfranchisephilippines.com/2012/04/ogie-doggie-franchise/', origin:'', description:'Ogie Doggie Hotdogs and Sauges', tags:['hotdogs','sausages','nalugi',] },
+      { title:'C2 ads', year:2021, image:'./image/c2.png', link:'https://www.facebook.com/watch/?extid=CL-UNK-UNK-UNK-IOS_GK0T-GK1C&v=467910734517117', profile:'', origin:'Jessabele of Antipolo', description:'', tags:['Afol','C2','its so yummy','very freshing'] },
+      { title:'Jessabele of Antipolo', year:2010, image:'./image/jessabel.png', link:'https://www.facebook.com/watch/?extid=CL-UNK-UNK-UNK-IOS_GK0T-GK1C&v=115207805159018', profile:'https://www.facebook.com/watch/?extid=CL-UNK-UNK-UNK-IOS_GK0T-GK1C&v=714009575351456', origin:'', description:'matagal na sya may mga videos before ba yung C2 ads', song: 'https://www.facebook.com/watch/?extid=CL-UNK-UNK-UNK-IOS_GK0T-GK1C&v=702027726550795', links: 'https://www.facebook.com/watch/?v=476309229173558', tags:['c2','antipolo','afol',] },
+      { title:'It really hurts', year:2020, image:'./image/hurts.png', link:'https://www.tiktok.com/@mimiyuuuh/video/6863388591817493762?_r=1&_t=ZS-9102BwzwLY5', profile:'https://www.tiktok.com/@mimiyuuuh', origin:'Mimiyuh', description:'', tags:['vlog','song'] },
+      { title:'Ha? Hatdog?', year:2012, image:'./image/hatdog.png', link:'https://www.youtube.com/watch?v=8zAgSMzEdcM', video:'https://www.youtube.com/watch?v=uyXv-IfXy7U', origin:'si Daniel Patilya ba talaga nag pauso neto?', description:'The Philippine television series Princess and I was released and first aired in 2012', tags:['ha','hotdog'] },
+{ title:'Sumbungan ng Hotdog', year:2018, image:'./image/sumbong.png', link:'https://www.youtube.com/watch?v=4Dmnalml4CI', profile:'', origin:'Mike Enriquez', description:'', tags:['hatdog','mike','news'] },
+{ title:'Daddy Rob mag brief ka na', year:2019, image:'./image/rob.jpg', link:'https://youtu.be/p4gm4kecNMk?si=Z35Wcl185aXOldEq&t=717', profile:'https://www.youtube.com/@MOMMYTONIFOWLER', origin:'Toni Fowler', description:'', tags:['brief','vlog'] },
+{ title:'So Weird', year:2018, image:'./image/weird.jpg', link:'https://youtube.com/shorts/oXIaNK_ji7Y?si=Y-AdNaEHNaUR1vlZ', profile:'https://www.youtube.com/@JaperSniperOfficial/shorts', origin:'Japer Sniper', description:'', tags:['ehahahaeeaaaaaahahaha','vlog'] },
+{ title:'Pasko na naman, ikay turing ng araw', year:2019, image:'./image/pasko.png', link:'https://youtu.be/NZoyKjEdMoA?si=jLuYYEGrofJ46wWo', profile:'https://youtube.com/@jannanthonygabutan?si=Z2hPWC9pjEbnDcsG', origin:'Jann Anthony Gabutan', description:'Maligayang Pasko😝🖕', tags:['christmas','ukulele','cute na bata','song'] },
+{ title:'Hangang Leeg', year:2019, image:'./image/arlene.jpg', link:'https://youtu.be/0zieYY3eBqs?si=Hg0fig0lbxS8j5yN', profile:'https://youtu.be/VjMJHJKwvVE?si=zVNTs08wG-00Nsjk', origin:'Arlene Sabandal', description:'', tags:['INC','Kapatid na Arlene','leeg'] },
+{ title:'Akoy sayo, ikaw ay akin', year:2019, image:'./image/buwan.png', link:'https://youtu.be/7EvuPdvh9YA?feature=shared', profile:'https://youtube.com/@jannanthonygabutan?si=Z2hPWC9pjEbnDcsG', origin:'Jann Anthony Gabutan', description:'Nakalimutan ko tuloy tuno ng buwan', tags:['buwan','ganda mo sa paningin','drums','song'] },
+{ title:'Okey Kayo, Lami Kaayo', year:2019, image:'./image/lami.png', link:'https://youtu.be/q1Bgc84jivA?si=1rfkbl3jigSPq3jH', profile:'https://www.tiktok.com/@kelvinray19?lang=en', origin:'Kelvin Ray', description:'', tags:['bisaya','korean','natuk-an ko','vlog'] },
+{ title:'Eternal Phlegm', year:2012, image:'./image/flames.png', link:'https://youtu.be/PCQEjf98QSE?si=-CkIYy-dLPI61FUf', profile:'https://youtube.com/@gcubedscsc?si=nraQYYqP7cU6KNgN', origin:'Stella Mae ft. Barak Woth', description:'I don’t undestand', tags:['close my eyes','you are watching me','flame','parody','song'] },
+{ title:'Blank Room Soup', year:2014, image:'./image/soup.jpg', link:'https://youtu.be/6VMRAGxjOoA?si=aXJ-plAOdoV35S92', news:'https://creepypasta-land.fandom.com/wiki/Blank_Room_Soup', origin:'originally uploaded in 2005', description:'Asawa nya at anak nya raw kinakain nya', tags:['ray-ray','dark web','deep web','creepypasta'] },
+{ title:'GMA na hack', year:2023, image:'./image/gma.png', link:'https://www.reddit.com/r/NANIKPosting/s/otxSQ2ln93',video: 'https://www.youtube.com/watch?v=782nI45iYsY', song: 'https://www.youtube.com/watch?v=YS0h2-hy9rw&list=RDYS0h2-hy9rw&start_radio=1', profile:'', origin:'', description:'I put the new Forgis on the Jeep I trap until the bloody bottoms is underneath \'Cause all my players got it out the streets I keep a hundred racks inside my jeans', tags:['GMA','hack','thug shaker'] },
+{ title:'Shakeys Incident', year:2021, image:'./image/shakeys.png', link:'https://fb.watch/D4ktDl4JgR/?fs=e', profile:'', origin:'James Caraan', description:'Umattend ako ng birthday party ng 1 year old sa Shakey\'s. Dumating yung mascot. Hindi pinasayaw. Yung host kumanta ng The Dawn. Hindi ko maintindihan ang nangyayari.', tags:['the dawn','mascot','walang maintindihan','salamat'] },
+{ title:'Alamano', year:2016, image:'./image/alamano.png', link:'https://youtu.be/DNInQID8EY8?si=vr246gkF1p84pMPn&t=356', profile:'', origin:'2016 Miting de Avance', description:'', tags:['bbm','politics'] },
+{ title:'Aljur look alie', year:2014, image:'./image/aljur.jpg', link:'https://www.facebook.com/AAGV.PAGE', profile:'https://www.facebook.com/share/1Cpdyp5y7Z/', origin:'unknown', description:'i think fake lang to', tags:['celebrity','look-alike'] },
+{ title:'Battousai', year:2016, image:'./image/battousai.png', link:'https://youtu.be/bUJWL2LU7yQ?si=YSnxeV3L6I4SSiZR&t=69', profile:'https://youtu.be/fhXvEjwXLf0?si=kQjcYCQZydWM8OZ8&t=310', origin:'Valentino', description:'baliktad yun, baliktad', tags:['news','criminal'] },
+{ title:'Pano mo nasabi?', year:2018, image:'./image/pano.jpg', news:'https://youtu.be/kCqS63E5G1c?si=yvTGkp9cjB6Z33hb', link: 'https://www.youtube.com/watch?v=0hOVfK0WkDg', profile:'https://youtube.com/shorts/4IwqQIPQZKY?si=LXdHvNXkEJ1EOEAf', origin:'Robert Nocos', description:'Ang lala pala ng ginawa nito. Sya lang tao sa mundo.', tags:['Panot','kalbo','news','criminal'] },
+{ title:'Di pa ba sapat narinig nyo?', year:2012, image:'./image/comment.png', news: 'https://newsinfo.inquirer.net/307810/massacre-suspect-dies-in-mpd-car', link:'https://youtu.be/t7rvZNIMKhs?si=49SvDDkdUh9VfbWJ', profile:'', origin:'Nestor Delizalde Jr.', description:'', tags:['no comment','news','criminal'] },
+{ title:'Demonyong Kamay', year:2018, image:'./image/kamay.png', link:'https://youtu.be/N2wq_Sf-LDU?si=19mx-7jygETcPJdr&t=32', profile:'', origin:'Edwardo Valencio', description:'Umiral siguro kademonyohan ng aking kamay, gumalaw', tags:['news','criminal','kontrabando','manyak'] },
+{ title:'Anak, itabi mo ako na', year:2009, image:'./image/mar.jpg', link:'https://youtu.be/BUqw7j6_hZA?si=t68h_PAJzeahMceK', profile:'', origin:'Mar Roxas', description:'Mar Roxas campign ad for vice presidency', tags:['politics','news'] },
+{ title:'Mar Roxas Traffic', year:2009, image:'./image/traffic.jpg', link:'https://youtu.be/SFXDprPullo?si=reipF_nZVJE9OmG8', news:'https://web.senate.gov.ph/press_release/2009/0727_roxas4.asp', origin:'SONA 2009', description:'Manuel Araneta Roxas II is a Filipino politician who served as a senator of the Philippines from 2004 to 2010. He is the grandson and namesake of former Philippine President Manuel Roxas', tags:['politics','news','traffic'] },
+{ title:'Happy NewYear Ebriwan', year:2015, image:'./image/happynewyear.jpg', link:'https://fb.watch/D4mN6_a1T_/?fs=e', profile:'', origin:'Manny Pacquiao', description:'', tags:['fireworks'] },
+{ title:'Wachafen Vella', year:2013, image:'./image/vella.webp', link:'https://youtu.be/OUi7SRE2pTk?si=wrc66o6R-aeRywEn&t=185', news:'https://www.facebook.com/share/v/1Gu8ERZNKs/', profile:'https://www.facebook.com/cristopher.d.ta/', origin:'Christoper Diwata', description:'I love blue collar people succeed', tags:['twilight','vampire','look-alike'] },
+{ title:'Mateo Unboxing', year:2020, image:'./image/matteo.jpg', link:'https://youtu.be/bmOx1ylpI0Y?si=iUTPSkBDNn2QBQhB', profile:'', origin:'Mateo', description:'', tags:['ps5','celebrity'] },
+{ title:'SAKSI Dispersal', year:2010, image:'./image/fajatin.png', link:'https://youtu.be/uyAjT0gOFZ4?si=_Ys3VnICkHcK6F6j', profile:'https://youtu.be/ox7TFi3OBTk?si=NiDb_jITTPZdw5LJ', origin:'Michael Fajatin', description:'Nag disperse sila pagkatapos nito hindi na sila, nag away sa simula, pagkatapos nito nagkaroon sila ng pagaaway sa simula', tags:['news','bloopers'] },
+{ title:'Classroom may batas', year:2020, image:'./image/kim.jpg', link:'https://youtu.be/o3OlCxCmSwc?si=DFI55K-4ggL1D-xt', song:'https://youtu.be/EmXK2DZP6eY?si=ng1tWkMb7JaSMHKI', origin:'Kim Chui', profile:'', description:'Pero pag sinabing pag, ng comply ka', tags:['songs','celebrity','abs-cbn'] },
+{ title:'Wooooooooow so Refreshing', year:2014, image:'./image/refresh.png', sound:'https://youtu.be/8tY7uFL_1Ek?si=mG-8pD4s6FwXPk0C', link:'https://fb.watch/D4GH1Kx3F9/?fs=e', song: 'https://youtu.be/8tY7uFL_1Ek?si=NFDu82X1EGy8HYMf&t=87', origin:'Wow Mali', profile:'', description:'', tags:['sounds'] },
+{ title:'Gusto kong sumabog at sabihin ang mga masasamang words', year:2018, image:'./image/sumabog.png', link:'https://youtu.be/8ylELL7r7UE?si=UxUQM_XtGmpaOw6v&t=301', origin:'Kit Thompson', profile:'https://www.philstar.com/nation/2022/03/19/2168298/actor-held-assaulting-girlfriend', description:'', tags:['pbb','abs-cbn'] },
+{ title:'Majoha', year:2022, image:'./image/majoha.jpeg', link:'https://youtu.be/YY-PAxAqu98?si=IrdrHHS5bFQ8nSlp', news:'https://politiko.com.ph/2022/04/19/wag-basta-manghusga-briones-defends-quality-of-education-after-majoha-issue-on-pbb-teens/features/', origin:'PBB', profile:'', description:'', tags:['pbb','history','abs-cbn'] },
+{ title:'Maute Planning', year:2017, image:'./image/maute.png', link:'https://youtu.be/PzCj1IlXaiw?si=C0m-R8d7fflRGDtG', news:'https://www.abs-cbn.com/focus/06/18/17/brothers-who-brought-death-and-ruin-to-marawi', origin:'Maute Brothers', profile:'', description:'', tags:['maute','marawi', 'criminal','news'] },
+{ title:'Mapriso ka', year:2022, image:'./image/mapriso.jpg', link:'https://youtu.be/Q60GknIxwoU?si=pJLGBC62HvcjRHrw', news:'https://www.tiktok.com/@ianlood/video/7162741051483000090?is_from_webapp=1&sender_device=pc&web_id=7489810933461239317', origin:'Unknown', profile:'', description:'aguy videohi ko', tags:['bisaya','public rage'] },
+{ title:'Kap Nino', year:2021, image:'./image/kap.jpg', video:'https://vt.tiktok.com/ZSyjMhWDJ/', link:'https://youtu.be/bwutxPWw6f4?si=h8qHYIPu51H5UcUh', origin:'Nino Barzaga', profile:'https://www.tiktok.com/@soulcaz?_r=1&_t=ZS-910uWCWKUFQ', description:'RIP Kap', tags:['mura','ptangina','gago'] },
+{ title:'Justin Nabunturan', year:2025, image:'./image/justin.jpeg', video:'https://vt.tiktok.com/ZSyjM5M77/', link:'https://vt.tiktok.com/ZSyjr6RkC/', origin:'Lester Bohol', profile:'https://www.facebook.com/profile.php?id=61580183191602', description:'dawg', tags:['weights','basketball','ricardo milos son','performative'] },
+{ title:'Rolbox', year:2025, image:'./image/rolbox.png', link:'https://vt.tiktok.com/ZSyjjK68L/', song:'https://vt.tiktok.com/ZSyjjnEuS/', origin:'Rambunat', profile:'https://www.tiktok.com/@biskyut77?_r=1&_t=ZS-910tZEQckMP', description:'Sino dito naglalaro ng rolbox', tags:['games','song','roblox','tiktok'] },
+{ title:'Among Use', year:2025, image:'./image/among.png', link:'https://vt.tiktok.com/ZSyj6S7fc/', origin:'Rambunat', profile:'https://www.tiktok.com/@biskyut77?_r=1&_t=ZS-910tZEQckMP', description:'natatatut ang hamilaw', tags:['games','tiktok','among us'] },
+{ title:'Choco Buns, Bili na po kayo', year:2025, image:'./image/choco.png', link:'https://vt.tiktok.com/ZSyj6j5rQ/', origin:'Rambunat', profile:'https://www.tiktok.com/@biskyut77?_r=1&_t=ZS-910tZEQckMP', description:'Chocomallow Pie, Graham Balls, 10 pesos lang, naawa ako sa mga creator na ganito' , tags:['song','job'] },
+{ title:'Alyas Otin', year:2023, image:'./image/othin.png', link:'https://youtu.be/SSebdhKtRxc?si=7hwK_5c4tp4ot0Br', origin:'', profile:'https://vt.tiktok.com/ZSyjMPaEd/', description:'zalzala koh', tags:['news','abs-cbn','criminal'] },
+{ title:'Pau Tang naman sa Leng Go Baba yaran', year:2025, image:'./image/tang.png', link:'https://vt.tiktok.com/ZSyjrrLFc/', origin:'Jonglay Coleta', profile:'https://www.tiktok.com/@jonglaycoleta?_r=1&_t=ZS-910v8pzksFR', description:'', tags:['tiktok','joao'] },
+{ title:'Kahawig mo si Joao', year:2021, image:'./image/joao.jpg', link: 'https://vt.tiktok.com/ZSyjrb7HP/', origin:'Jonglay Coleta', profile:'https://www.tiktok.com/@jonglaycoleta?_r=1&_t=ZS-910v8pzksFR', description:'shout out din sayo, kahawig mo si Joao, cute mo pa din lods', tags:['tiktok'] },
+{ title:'Angel na nagmumura', year:2021, image:'./image/angel.png', link:'https://vt.tiktok.com/ZSyjrgAxf/', origin:'James Leoncio', profile:'https://vt.tiktok.com/ZSyjrg4g8/', description:'mukha akong anjel taena', tags:['tiktok','angel','devil'] },
+{ title:'Alam kong malayong maging kami', year:2019, image:'./image/malayo.jpg', link:'https://www.youtube.com/watch?v=Mu_pHPGSKkM', origin:'Unknown Nikoy', profile:'', description:'at least sinubukan nyang mahalin', tags:['hugot'] },
+{ title:'Bebe ko, gising na ikaw', year:2019, image:'./image/bebe.jpg', link:'https://vt.tiktok.com/ZSyjheLHF/', origin:'Unknown', profile:'', description:'Tanghali na', tags:['tiktok','urban legend'] },
+{ title:'Araw at Gabi', year:2021, image:'./image/larve.png', link:'https://vt.tiktok.com/ZSyjhuPx8/', origin:'Unknown', profile:'', description:'', tags:['larva','urban legend','tiktok'] },
+{ title:'Jjmon ako? Salamat', year:2021, image:'./image/jjmon.png', link:'https://vt.tiktok.com/ZSyjh9CHA/', origin:'Unknown', profile:'', description:'', tags:['tiktok','urban legend'] },
+{ title:'Ilagay ang kamay sa gilid ng mata', year:2019, image:'./image/martsa.png', link:'https://vt.tiktok.com/ZSyjhs4SV/', origin:'Unknown', profile:'', description:'', tags:['rotc','martsa'] },
+{ title:'Adobong Menok', year:2007, image:'./image/adobo.jpg', link:'https://youtu.be/H_UxyQ7cb3I?si=8D0xOr9IMy1cB3XX', origin:'Travis Craft', profile:'https://www.youtube.com/@poolboyinla', description:'dahon ng laurel, angsarap sarap', tags:['food','vlog'] },
+{ title:'Batang Hindi Pinapakain', year:2012, image:'./image/bata.jpg', link:'https://www.youtube.com/watch?v=aCEVbDC1oHQ&pp=ygUcbWFtYSBnYW5pdG8gbmEgcG8gYWtvIG5nYXlvbg%3D%3D', origin:'Unknown', profile:'https://www.youtube.com/@poolboyinla', description:'dahon ng laurel, angsarap sarap', tags:['food','vlog'] },
 
     ];
 
